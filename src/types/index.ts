@@ -28,6 +28,7 @@ export type Show = {
   media_type: MediaType;
   // media_type: string;
   budget: number | null;
+  genres: Genre[];
   homepage: string | null;
   showId: string;
   id: number;

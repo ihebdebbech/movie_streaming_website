@@ -80,7 +80,7 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={cn(
-          'overlflow-y-auto min-h-screen overflow-x-hidden bg-background font-sans antialiased',
+          'overlflow-y-auto min-h-screen overflow-x-hidden   font-sans antialiased',
           fontSans.variable,
           fontHeading.variable,
         )}>
@@ -92,10 +92,10 @@ export default function RootLayout({
           {/* <TrpcProvider> */}
           {children}
           <TailwindIndicator />
-          <Analytics />
-          <SpeedInsights />
+          {/* <Analytics />
+          <SpeedInsights /> */}
           {/* </TrpcProvider> */}
-          {env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID && (
+          {/* {env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID && (
             <>
               <Script
                 id="_next-ga-init"
@@ -113,7 +113,7 @@ export default function RootLayout({
                 src={`https://www.googletagmanager.com/gtag/js?id=${env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID}`}
               />
             </>
-          )}
+          )} */}
         </ThemeProvider>
       </body>
     </html>

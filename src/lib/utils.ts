@@ -190,6 +190,7 @@ export async function handleModal(slug: string): Promise<Show | null> {
   if (!slug) return null;
   const movieId: number = getIdFromSlug(slug);
   if (!movieId) return null;
+
   return MovieService.findCurrentMovie(movieId, slug);
 }
 

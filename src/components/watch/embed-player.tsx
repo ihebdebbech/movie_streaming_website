@@ -18,22 +18,12 @@ function EmbedPlayer(props: EmbedPlayerProps) {
 
   const [seasons, setSeasons] = React.useState<ISeason[] | null>(null);
 
-  React.useEffect(() => {
-    // if anime type -> handle after fetch season and episode
-    if (props.mediaType === MediaType.ANIME) {
-      return;
-    }
-    if (iframeRef.current) {
-      iframeRef.current.src = props.url;
-    }
+ React.useEffect(() => {
+  if (props.mediaType === MediaType.ANIME) return;
+  if (!props.url) return;
 
-    const { current } = iframeRef;
-    const iframe: HTMLIFrameElement | null = current;
-    iframe?.addEventListener('load', handleIframeLoaded);
-    return () => {
-      iframe?.removeEventListener('load', handleIframeLoaded);
-    };
-  }, []);
+  handleSetIframeUrl(props.url);
+}, [props.url]);
 
   React.useEffect(() => {
     if (!props.movieId || props.mediaType !== MediaType.ANIME) {
@@ -102,13 +92,13 @@ function EmbedPlayer(props: EmbedPlayerProps) {
       style={{
         width: '100%',
         height: '100%',
-        position: 'absolute',
+        position: 'relative',
         backgroundColor: '#000',
       }}>
       {seasons && (
         <Season seasons={seasons ?? []} onChangeEpisode={handleChangeEpisode} />
       )}
-      <div className="header-top absolute left-0 right-0 top-8 z-[2] flex h-fit w-fit items-center justify-between gap-x-5 px-4 md:h-20 md:gap-x-8 md:px-10 lg:h-24">
+     {/*  <div className="header-top absolute left-0 right-0 top-8 z-[2] flex h-fit w-fit items-center justify-between gap-x-5 px-4 md:h-20 md:gap-x-8 md:px-10 lg:h-24">
         <div className="flex flex-1 items-center gap-x-5 md:gap-x-8">
           <svg
             className="h-10 w-10 flex-shrink-0 cursor-pointer transition hover:scale-125"
@@ -126,6 +116,7 @@ function EmbedPlayer(props: EmbedPlayerProps) {
           </svg>
         </div>
       </div>
+      */}
       <div
         ref={loadingRef}
         className="absolute z-[1] flex h-full w-full items-center justify-center">

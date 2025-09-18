@@ -6,7 +6,7 @@ import { RequestType, type ShowRequest } from '@/enums/request-type';
 import MovieService from '@/services/MovieService';
 import { Genre } from '@/enums/genre';
 import { getRandomShow } from '@/lib/utils';
-
+import FlowingLightStreaks from '@/components/flowing-light-streaks'
 export const revalidate = 3600;
 
 export default async function Home() {
@@ -78,12 +78,24 @@ export default async function Home() {
     },
   ];
   const allShows = await MovieService.getShows(requests);
+  
   const randomShow: Show | null = getRandomShow(allShows);
   return (
     <>
+    
+         <div className="min-h-screen w-full  bg-gradient-to-br from-lightdarkblue via-lightdarkblue to-lightdarkslate">
+          
+             <div className="fixed inset-0 overflow-hidden ">
+              <FlowingLightStreaks/>
+        {/* Flowing Light Streaks */}
+     
+
+        {/* Enhanced Stars */}
+      </div>
       <h1 className="hidden">{h1}</h1>
       <Hero randomShow={randomShow} />
       <ShowsContainer shows={allShows} />
+    </div>
     </>
   );
 }

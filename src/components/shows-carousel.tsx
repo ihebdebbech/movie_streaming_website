@@ -9,6 +9,8 @@ import { Button } from '@/components/ui/button';
 import { cn, getNameFromShow, getSlug } from '@/lib/utils';
 import { usePathname } from 'next/navigation';
 import CustomImage from './custom-image';
+import { Calendar, Clock, Star } from 'lucide-react';
+import { useLoadingStore } from '@/stores/loading';
 
 interface ShowsCarouselProps {
   title: string;
@@ -51,9 +53,9 @@ const ShowsCarousel = ({ title, shows }: ShowsCarouselProps) => {
   };
 
   return (
-    <section aria-label="Carousel of shows" className="relative my-[3vw] p-0">
+    <section aria-label="Carousel of shows" className="relative my-[6vw] p-0 h-[450px]">
       {shows.length !== 0 && (
-        <div className="space-y-1 sm:space-y-2.5">
+        <div className=" sm:space-y-2.5">
           <h2 className="m-0 px-[4%] text-lg font-semibold text-foreground/80 transition-colors hover:text-foreground sm:text-xl 2xl:px-[60px]">
             {title ?? '-'}
           </h2>
@@ -70,7 +72,7 @@ const ShowsCarousel = ({ title, shows }: ShowsCarouselProps) => {
             </Button>
             <div
               ref={showsRef}
-              className="no-scrollbar m-0 grid auto-cols-[calc(100%/3)] grid-flow-col overflow-x-auto overflow-y-hidden px-[4%] py-0 duration-500 ease-in-out sm:auto-cols-[25%] md:touch-pan-y lg:auto-cols-[20%] xl:auto-cols-[calc(100%/6)] 2xl:px-[60px]">
+              className="no-scrollbar m-0 grid auto-cols-[calc(100%/3)] grid-flow-col overflow-x-auto px-[4%]  duration-500 ease-in-out sm:auto-cols-[25%] md:touch-pan-y lg:auto-cols-[20%] xl:auto-cols-[calc(100%/6)] 2xl:px-[60px] gap-2 hover:overflow-y-visible py-10">
               {shows.map((show) => (
                 <ShowCard key={show.id} show={show} pathname={pathname} />
               ))}
@@ -98,27 +100,26 @@ export const ShowCard = ({ show }: { show: Show; pathname: string }) => {
     event.currentTarget.src = '/images/grey-thumbnail.jpg';
   };
 
+  const formatDate = (dateString: string) => {
+    if (!dateString) return 'N/A';
+    return new Date(dateString).getFullYear().toString();
+  };
+
+  const formatRating = (rating: number) => {
+    return rating ? rating.toFixed(1) : 'N/A';
+  };
+
   return (
-    // <picture className="relative aspect-[2/3] md:aspect-video">
-    <picture className="relative aspect-[2/3]">
+    <div className="group relative z-0 hover:z-50 w-full h-80 overflow-hidden rounded-lg bg-neutral-800 transition-all duration-500 cursor-pointer hover:scale-105   hover:-translate-y-8">
       <a
         className="pointer-events-none"
         aria-hidden={false}
         role="link"
         aria-label={getNameFromShow(show)}
+        onClick={() => useLoadingStore.getState().show()}
         href={`/${show.media_type}/${getSlug(show.id, getNameFromShow(show))}`}
       />
-      {/* <source */}
-      {/*   // srcSet={`https://image.tmdb.org/t/p/w342/${show.poster_path ?? show.backdrop_path}`} */}
-      {/*   srcSet={ */}
-      {/*     show.backdrop_path ?? show.poster_path */}
-      {/*       ? `https://image.tmdb.org/t/p/w500/${ */}
-      {/*           show.backdrop_path ?? show.poster_path */}
-      {/*         }` */}
-      {/*       : '/images/grey-thumbnail.jpg' */}
-      {/*   } */}
-      {/*   media="(min-width: 780px)" */}
-      {/* /> */}
+      
       <CustomImage
         src={
           show.poster_path ?? show.backdrop_path
@@ -128,7 +129,7 @@ export const ShowCard = ({ show }: { show: Show; pathname: string }) => {
             : '/images/grey-thumbnail.jpg'
         }
         alt={show.title ?? show.name ?? 'poster'}
-        className="h-full w-full cursor-pointer rounded-lg px-1 transition-all md:hover:scale-110"
+        className="h-full w-full cursor-pointer rounded-lg "
         fill
         sizes="(max-width: 768px) 50vw, (max-width: 1200px) 100vw, 33vw"
         style={{
@@ -136,6 +137,7 @@ export const ShowCard = ({ show }: { show: Show; pathname: string }) => {
         }}
         onClick={() => {
           const name = getNameFromShow(show);
+          console.log(show)
           const path: string =
             show.media_type === MediaType.TV ? 'tv-shows' : 'movies';
           window.history.pushState(
@@ -151,6 +153,53 @@ export const ShowCard = ({ show }: { show: Show; pathname: string }) => {
         }}
         onError={imageOnErrorHandler}
       />
-    </picture>
+
+      {/* Hover Overlay */}
+      <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-blue-950 via-slate-950 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 ease-in-out transform translate-y-full group-hover:translate-y-0">
+        <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+          {/* Title */}
+          <h3 className="font-bold text-lg mb-2 line-clamp-2 leading-tight">
+            {getNameFromShow(show)}
+          </h3>
+          
+          {/* Details Row */}
+          <div className="flex items-center gap-4 mb-3 text-sm text-gray-300">
+            {/* Rating */}
+            {show.vote_average && (
+              <div className="flex items-center gap-1">
+                <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                <span>{formatRating(show.vote_average)}</span>
+              </div>
+            )}
+            
+            {/* Release Date */}
+            {(show.release_date || show.first_air_date) && (
+              <div className="flex items-center gap-1">
+                <Calendar className="w-4 h-4" />
+                <span>{formatDate(show.release_date || show.first_air_date!)}</span>
+              </div>
+            )}
+            
+            {/* Media Type */}
+            <div className="flex items-center gap-1">
+              <Clock className="w-4 h-4" />
+              <span className="capitalize">
+                {show.media_type === MediaType.TV ? 'TV Show' : 'Movie'}
+              </span>
+            </div>
+          </div>
+          
+          {/* Overview */}
+          {show.overview && (
+            <p className="text-sm text-gray-200 line-clamp-3 leading-relaxed">
+              {show.overview}
+            </p>
+          )}
+          
+          {/* Genres (if available) */}
+        
+        </div>
+      </div>
+    </div>
   );
 };

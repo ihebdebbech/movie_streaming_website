@@ -18,6 +18,7 @@ import React from 'react';
 import { type Show } from '@/types/index';
 import { type AxiosResponse } from 'axios';
 import MovieService from '@/services/MovieService';
+import { useLoadingStore } from '@/stores/loading';
 
 interface ShowsContainerProps {
   show?: Show;
@@ -33,6 +34,9 @@ const ShowsContainer = ({ shows }: ShowsContainerProps) => {
   const searchStore = useSearchStore();
 
   React.useEffect(() => {
+    if(shows != null){
+      useLoadingStore.getState().hide();
+    }
     void handleOpenModal();
   }, []);
 

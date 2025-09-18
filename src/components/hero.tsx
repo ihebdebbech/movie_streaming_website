@@ -86,6 +86,14 @@ const Hero = ({ randomShow }: HeroProps) => {
               sizes="(max-width: 768px) 50vw, (max-width: 1200px) 100vw, 33vw"
               fill
               priority
+                   style={{
+      WebkitMaskImage:
+        "linear-gradient(to bottom, black 40%, transparent 100%)",
+      maskImage:
+        "linear-gradient(to bottom, black 40%, transparent 100%)",
+      WebkitMaskRepeat: "no-repeat",
+      maskRepeat: "no-repeat",
+    }}
             />
             <div className="absolute bottom-0 left-0 right-0 top-0">
               <div className="absolute bottom-[35%] left-[4%] top-0 z-10 flex w-[36%] flex-col justify-end space-y-2">
@@ -139,8 +147,8 @@ const Hero = ({ randomShow }: HeroProps) => {
                 </div>
               </div>
             </div>{' '}
-            <div className="opacity-71 absolute inset-0 right-[26.09%] z-[8] bg-gradient-to-r from-secondary to-85%"></div>
-            <div className="absolute bottom-[-1px] left-0 right-0 z-[8] h-[14.7vw] bg-gradient-to-b from-background/0 from-30% via-background/30 via-50% to-background to-80%"></div>
+   <div className="fixed inset-0 bg-gradient-to-r top-0 left-0  w-1/2 from-slate-950  to-transparent " />
+      <div className="fixed inset-0 bg-gradient-to-t from-slate-950  to-transparent " />
           </div>
           <div className="relative inset-0 -z-50 mb-5 pb-[60%] sm:pb-[40%]"></div>
         </>

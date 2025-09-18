@@ -22,11 +22,13 @@ import Link from 'next/link';
 import * as React from 'react';
 import Youtube from 'react-youtube';
 import CustomImage from './custom-image';
+import { useLoadingStore } from '@/stores/loading';
 
 type YouTubePlayer = {
   mute: () => void;
   unMute: () => void;
   playVideo: () => void;
+  pauseVideo: () => void;
   seekTo: (value: number) => void;
   container: HTMLDivElement;
   internalPlayer: YouTubePlayer;
@@ -96,7 +98,7 @@ const ShowModal = () => {
     if (!id || !type) {
       return;
     }
-    const data: ShowWithGenreAndVideo = await MovieService.findMovieByIdAndType(
+    const data: ShowWithGenreAndVideo = await MovieService.findMovieGenreByIdAndType(
       id,
       type,
     );
@@ -160,7 +162,18 @@ const ShowModal = () => {
       videoRef.internalPlayer.mute();
     }
   };
+  const handlePlayClick = () => {
+  // Stop the trailer immediately
+  if (youtubeRef.current) {
+    const videoRef: YouTubePlayer = youtubeRef.current as YouTubePlayer;
+    videoRef.internalPlayer.pauseVideo();
+  }
 
+  // Show global loader
+  useLoadingStore.getState().show();
+
+  
+};
   const handleHref = (): string => {
     const type = isAnime
       ? 'anime'
@@ -173,6 +186,7 @@ const ShowModal = () => {
         modalStore.show?.media_type === MediaType.MOVIE ? 'm' : 't';
       id = `${prefix}-${id}`;
     }
+     
     return `/watch/${type}/${id}`;
   };
 
@@ -181,7 +195,8 @@ const ShowModal = () => {
       open={modalStore.open}
       onOpenChange={handleCloseModal}
       aria-label="Modal containing show's details">
-      <DialogContent className="w-full overflow-hidden rounded-md bg-zinc-900 p-0 text-left align-middle shadow-xl dark:bg-zinc-900 sm:max-w-3xl lg:max-w-4xl">
+        
+      <DialogContent className="w-full overflow-hidden rounded-md bg-slate-950 p-0 text-left align-middle shadow-xl dark:bg-gray-950    sm:max-w-3xl lg:max-w-4xl">
         <div className="video-wrapper relative aspect-video">
           <CustomImage
             fill
@@ -217,6 +232,8 @@ const ShowModal = () => {
             <div className="flex items-center gap-2.5">
               <Link href={handleHref()}>
                 <Button
+                onClick={() => handlePlayClick()}
+               
                   aria-label={`${isPlaying ? 'Pause' : 'Play'} show`}
                   className="group h-auto rounded py-1.5">
                   <>

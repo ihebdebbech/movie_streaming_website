@@ -31,8 +31,9 @@ class MovieService extends BaseService {
   static async findCurrentMovie(id: number, pathname: string): Promise<Show> {
     const data = await Promise.allSettled([
       this.findMovie(id),
-      this.findTvSeries(id),
+    //  this.findTvSeries(id),
     ]);
+
     const response = data
       .filter(this.isFulfilled)
       .map(
@@ -73,7 +74,7 @@ class MovieService extends BaseService {
     return this.axios(baseUrl).get<ISeason>(`/tv/${id}/season/${season}`);
   }
 
-  static findMovieByIdAndType = cache(async (id: number, type: string) => {
+  static findMovieGenreByIdAndType = cache(async (id: number, type: string) => {
     const params: Record<string, string> = {
       language: 'en-US',
       append_to_response: 'videos,keywords',
@@ -95,41 +96,30 @@ class MovieService extends BaseService {
       case RequestType.ANIME_NETFLIX:
         return `/discover/${req.mediaType}?with_keywords=210024%2C&with_networks=213&language=en-US`;
       case RequestType.TRENDING:
-        return `/trending/${
-          req.mediaType
-        }/day?language=en-US&with_original_language=en&page=${req.page ?? 1}`;
+        return `/trending/${req.mediaType
+          }/day?language=en-US&with_original_language=en&page=${req.page ?? 1}`;
       case RequestType.TOP_RATED:
-        return `/${req.mediaType}/top_rated?page=${
-          req.page ?? 1
-        }&with_original_language=en&language=en-US`;
+        return `/${req.mediaType}/top_rated?page=${req.page ?? 1
+          }&with_original_language=en&language=en-US`;
       case RequestType.NETFLIX:
-        return `/discover/${
-          req.mediaType
-        }?with_networks=213&with_original_language=en&language=en-US&page=${
-          req.page ?? 1
-        }`;
+        return `/discover/${req.mediaType
+          }?with_networks=213&with_original_language=en&language=en-US&page=${req.page ?? 1
+          }`;
       case RequestType.POPULAR:
-        return `/${
-          req.mediaType
-        }/popular?language=en-US&with_original_language=en&page=${
-          req.page ?? 1
-        }&without_genres=${Genre.TALK},${Genre.NEWS}`;
+        return `/${req.mediaType
+          }/popular?language=en-US&with_original_language=en&page=${req.page ?? 1
+          }&without_genres=${Genre.TALK},${Genre.NEWS}`;
       case RequestType.GENRE:
-        return `/discover/${req.mediaType}?with_genres=${
-          req.genre
-        }&language=en-US&with_original_language=en&page=${
-          req.page ?? 1
-        }&without_genres=${Genre.TALK},${Genre.NEWS}`;
+        return `/discover/${req.mediaType}?with_genres=${req.genre
+          }&language=en-US&with_original_language=en&page=${req.page ?? 1
+          }&without_genres=${Genre.TALK},${Genre.NEWS}`;
       case RequestType.ANIME_GENRE:
-        return `/discover/${req.mediaType}?with_genres=${
-          req.genre
-        }&with_keywords=210024%2C&language=en-US&with_original_language=en&page=${
-          req.page ?? 1
-        }&without_genres=${Genre.TALK},${Genre.NEWS}`;
+        return `/discover/${req.mediaType}?with_genres=${req.genre
+          }&with_keywords=210024%2C&language=en-US&with_original_language=en&page=${req.page ?? 1
+          }&without_genres=${Genre.TALK},${Genre.NEWS}`;
       case RequestType.KOREAN:
-        return `/discover/${req.mediaType}?with_genres=${
-          req.genre
-        }&with_original_language=ko&language=en-US&page=${req.page ?? 1}`;
+        return `/discover/${req.mediaType}?with_genres=${req.genre
+          }&with_original_language=ko&language=en-US&page=${req.page ?? 1}`;
       default:
         throw new Error(
           `request type ${req.requestType} is not implemented yet`,
@@ -181,8 +171,7 @@ class MovieService extends BaseService {
 
   static searchMovies = cache(async (query: string, page?: number) => {
     const { data } = await this.axios(baseUrl).get<TmdbPagingResponse>(
-      `/search/multi?query=${encodeURIComponent(query)}&language=en-US&page=${
-        page ?? 1
+      `/search/multi?query=${encodeURIComponent(query)}&language=en-US&page=${page ?? 1
       }`,
     );
 

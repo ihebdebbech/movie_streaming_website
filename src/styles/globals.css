@@ -23,7 +23,9 @@ body,
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+     --lightdarkblue:  #02040f;
+     --lightdarkslate:  #161d3b;
+     --background: linear-gradient(to bottom right, #020617, #1e3a8a, #020617);
     --foreground: 222.2 84% 4.9%;
 
     --card: 0 0% 100%;
@@ -55,7 +57,7 @@ body,
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
+   --background: linear-gradient(to bottom right, #020617, #1e3a8a, #020617);
     --foreground: 210 40% 98%;
 
     --card: 222.2 84% 4.9%;
@@ -90,8 +92,9 @@ body,
     @apply border-border;
   }
 
-  body {
-    @apply bg-background text-foreground;
+ body {
+    background: var(--background); /* Not @apply bg-background */
+    color: hsl(var(--foreground)); /* You can still use HSL vars */
   }
 }
 
